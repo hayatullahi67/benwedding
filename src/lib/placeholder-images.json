@@ -1,64 +1,23 @@
+
 {
   "placeholderImages": [
     {
       "id": "wedding-invitation",
       "description": "A beautiful wedding invitation card with floral designs.",
-      "imageUrl": "https://picsum.photos/seed/wedding1/400/600",
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRLYsk0tpshDuF5vKb2JTCtSUjvOgANtSsjVSFXtWzbDltm9e3ukKb-Dko&s",
       "imageHint": "wedding invitation"
     },
     {
       "id": "hero-rings",
       "description": "Close-up of two wedding rings on a reflective surface.",
-      "imageUrl": "https://picsum.photos/seed/newrings/1920/1080",
+      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUsHLdSVQxG3PweyZpXwQdz5WXdQMPz6wBLspQxXTJJAuxqxOxYTkywNM&s",
       "imageHint": "wedding rings"
     },
     {
       "id": "hero-bouquet",
       "description": "A bride holding a beautiful wedding bouquet.",
-      "imageUrl": "https://picsum.photos/seed/newbouquet/1920/1080",
-      "imageHint": "wedding bouquet"
-    },
-    {
-      "id": "hero-hands",
-      "description": "A newly married couple holding hands outdoors.",
-      "imageUrl": "https://picsum.photos/seed/newhands/1920/1080",
+      "imageUrl": "data:image/jpeg;base64,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",
       "imageHint": "couple hands"
-    },
-    {
-      "id": "hero-arch",
-      "description": "A beautiful wedding arch decorated with flowers.",
-      "imageUrl": "https://picsum.photos/seed/newarch/1920/1080",
-      "imageHint": "wedding arch"
-    },
-    {
-      "id": "our-story-image",
-      "description": "A romantic silhouette of a couple at sunset.",
-      "imageUrl": "https://picsum.photos/seed/story/600/800",
-      "imageHint": "couple silhouette"
-    },
-    {
-      "id": "memory-1",
-      "description": "Guests dancing at the wedding reception.",
-      "imageUrl": "https://picsum.photos/seed/mem1/600/400",
-      "imageHint": "wedding dance"
-    },
-    {
-      "id": "memory-2",
-      "description": "A candid photo of the couple laughing together.",
-      "imageUrl": "https://picsum.photos/seed/mem2/600/400",
-      "imageHint": "couple laughing"
-    },
-    {
-      "id": "memory-3",
-      "description": "The beautiful wedding cake being cut.",
-      "imageUrl": "https://picsum.photos/seed/mem3/600/400",
-      "imageHint": "wedding cake"
-    },
-    {
-      "id": "memory-4",
-      "description": "A selfie of friends at the wedding party.",
-      "imageUrl": "https://picsum.photos/seed/mem4/600/400",
-      "imageHint": "friends selfie"
     }
   ]
 }
