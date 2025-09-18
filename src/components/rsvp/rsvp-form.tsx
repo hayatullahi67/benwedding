@@ -1,0 +1,208 @@
+"use client";
+
+import { useState } from 'react';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
+
+const rsvpFormSchema = z.object({
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  attending: z.enum(["yes", "no"], { required_error: "Please select an option." }),
+  name: z.string().min(2, { message: "Your name must be at least 2 characters." }),
+  phone: z.string().optional(),
+  guests: z.string().min(1, { message: "Please select the number of guests." }),
+  relation: z.string({ required_error: "Please select your connection." }),
+  directions: z.string({ required_error: "Please let us know if you need directions." }),
+});
+
+type RsvpFormValues = z.infer<typeof rsvpFormSchema>;
+
+export function RsvpForm() {
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [submittedData, setSubmittedData] = useState<RsvpFormValues | null>(null);
+
+  const form = useForm<RsvpFormValues>({
+    resolver: zodResolver(rsvpFormSchema),
+    mode: "onChange",
+  });
+
+  const watchAttending = form.watch("attending");
+  const invitationImage = PlaceHolderImages.find(p => p.id === 'wedding-invitation');
+
+
+  function onSubmit(data: RsvpFormValues) {
+    console.log(data);
+    setSubmittedData(data);
+    setIsSubmitted(true);
+  }
+
+  return (
+    <>
+      <div className="container mx-auto px-4">
+        <Card className="w-full max-w-2xl mx-auto rounded-2xl shadow-xl bg-background/90 backdrop-blur-sm">
+          <CardHeader className="text-center p-6 md:p-8">
+            <CardTitle className="font-headline text-5xl md:text-6xl text-primary">Kindly RSVP</CardTitle>
+            <CardDescription className="text-base md:text-lg pt-2">
+              We can't wait to celebrate with you!
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-6 md:p-8">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField control={form.control} name="email" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email Address *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="adewale@example.com" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="attending" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Kindly confirm if you will honor us with your presence at our Reception? *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger><SelectValue placeholder="Select your attendance" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes, I’ll be there</SelectItem>
+                          <SelectItem value="no">Sorry, I can’t make it</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {watchAttending === 'yes' && <FormDescription>We’ll send you the invitation email — check your inbox.</FormDescription>}
+                      {watchAttending === 'no' && <FormDescription>Thank you — we will miss you!</FormDescription>}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="name" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Your Name *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Your full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="phone" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input type="tel" placeholder="(123) 456-7890" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="guests" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Number of guests attending (including yourself) *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger><SelectValue placeholder="Select number of guests" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="1">1</SelectItem>
+                          <SelectItem value="2">2</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="relation" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Please let us know your connection to the couple *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger><SelectValue placeholder="Select your relation" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="bride-guest">Bride's guest</SelectItem>
+                          <SelectItem value="groom-guest">Groom's guest</SelectItem>
+                          <SelectItem value="family">Family</SelectItem>
+                          <SelectItem value="friend">Friend</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField control={form.control} name="directions" render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Do you need Direction to Locate the Venue? *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="yes">Yes</SelectItem>
+                          <SelectItem value="no">No</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl">Confirm Attendance</Button>
+              </form>
+            </Form>
+          </CardContent>
+        </Card>
+      </div>
+      <Dialog open={isSubmitted} onOpenChange={setIsSubmitted}>
+        <DialogContent className="sm:max-w-[425px] text-center bg-background rounded-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-headline text-primary">
+              {submittedData?.attending === 'yes' ? 'Thank You!' : 'We will miss you!'}
+            </DialogTitle>
+            <DialogDescription className="pt-2">
+                {submittedData?.attending === 'yes' 
+                ? 'Your RSVP has been confirmed. We have sent the invitation to your email. We are so excited to celebrate with you!'
+                : 'Thank you for letting us know. You will be missed!'}
+            </DialogDescription>
+          </DialogHeader>
+          {submittedData?.attending === 'yes' && invitationImage && (
+             <div className="py-4">
+                <Image src={invitationImage.imageUrl} alt={invitationImage.description} width={200} height={300} className="mx-auto rounded-lg shadow-lg" data-ai-hint={invitationImage.imageHint} />
+             </div>
+          )}
+          <Button onClick={() => setIsSubmitted(false)}>Close</Button>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
+}

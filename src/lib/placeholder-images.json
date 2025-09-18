@@ -1,3 +1,10 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "wedding-invitation",
+      "description": "A beautiful wedding invitation card with floral designs.",
+      "imageUrl": "https://picsum.photos/seed/wedding1/400/600",
+      "imageHint": "wedding invitation"
+    }
+  ]
 }
