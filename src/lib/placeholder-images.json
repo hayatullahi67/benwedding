@@ -8,27 +8,27 @@
     },
     {
       "id": "hero-rings",
-      "description": "Close-up of two wedding rings on a surface.",
-      "imageUrl": "https://picsum.photos/seed/rings/1920/1080",
+      "description": "Close-up of two wedding rings on a reflective surface.",
+      "imageUrl": "https://picsum.photos/seed/newrings/1920/1080",
       "imageHint": "wedding rings"
     },
     {
       "id": "hero-bouquet",
-      "description": "A beautiful wedding bouquet of flowers.",
-      "imageUrl": "https://picsum.photos/seed/bouquet/1920/1080",
+      "description": "A bride holding a beautiful wedding bouquet.",
+      "imageUrl": "https://picsum.photos/seed/newbouquet/1920/1080",
       "imageHint": "wedding bouquet"
     },
     {
       "id": "hero-hands",
-      "description": "A newly married couple holding hands, showcasing their wedding rings.",
-      "imageUrl": "https://picsum.photos/seed/couplehands/1920/1080",
+      "description": "A newly married couple holding hands outdoors.",
+      "imageUrl": "https://picsum.photos/seed/newhands/1920/1080",
       "imageHint": "couple hands"
     },
     {
-      "id": "hero-roses",
-      "description": "A beautiful bouquet of roses.",
-      "imageUrl": "https://picsum.photos/seed/roses/1920/1080",
-      "imageHint": "roses bouquet"
+      "id": "hero-arch",
+      "description": "A beautiful wedding arch decorated with flowers.",
+      "imageUrl": "https://picsum.photos/seed/newarch/1920/1080",
+      "imageHint": "wedding arch"
     },
     {
       "id": "our-story-image",
