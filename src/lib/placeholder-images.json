@@ -8,15 +8,15 @@
     },
     {
       "id": "hero-1",
-      "description": "Close-up of wedding rings resting on delicate white flowers.",
-      "imageUrl": "https://picsum.photos/seed/rings/1920/1080",
-      "imageHint": "wedding rings"
+      "description": "A happy newlywed couple embracing outdoors.",
+      "imageUrl": "https://picsum.photos/seed/happycouple/1920/1080",
+      "imageHint": "happy couple"
     },
     {
       "id": "hero-2",
-      "description": "A vibrant and lush bouquet of wedding flowers.",
-      "imageUrl": "https://picsum.photos/seed/bouquet/1920/1080",
-      "imageHint": "wedding bouquet"
+      "description": "A beautifully decorated wedding arch with flowers.",
+      "imageUrl": "https://picsum.photos/seed/weddingarch/1920/1080",
+      "imageHint": "wedding arch"
     },
     {
       "id": "hero-3",

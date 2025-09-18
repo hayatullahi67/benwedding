@@ -12,17 +12,26 @@ export function Hero() {
 
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-12 text-background">
-      <div className="absolute inset-0 bg-black/50 z-10"></div>
       <Carousel
         opts={{ loop: true }}
         plugins={[
             Autoplay({
               delay: 4000,
+              stopOnInteraction: false,
             }),
           ]}
         className="absolute inset-0 w-full h-full"
       >
         <CarouselContent>
+          <CarouselItem>
+            <video
+                src="https://firebasestorage.googleapis.com/v0/b/firebase-studio-demos.appspot.com/o/asset-videos%2Ffalling-petals.mp4?alt=media"
+                autoPlay
+                loop
+                muted
+                className="w-full h-full object-cover"
+            />
+          </CarouselItem>
           {heroImages.map(image => (
             <CarouselItem key={image.id}>
               <Image
@@ -40,13 +49,13 @@ export function Hero() {
       
       <div className="container mx-auto px-4 z-20">
         <div className="text-center">
-            <h2 className="text-lg md:text-xl text-background/80 mb-4">
+            <h2 className="text-lg md:text-xl text-background/80 mb-4 drop-shadow-md">
               Together with our families, we joyfully invite you to celebrate our wedding
             </h2>
             <h1 className="font-headline text-7xl md:text-8xl lg:text-9xl text-white mb-6 drop-shadow-lg">
               Deborah Jijil & Benjamin Ogbeh
             </h1>
-            <p className="max-w-3xl mx-auto text-base md:text-lg text-background/90 mb-8 drop-shadow-sm">
+            <p className="max-w-3xl mx-auto text-base md:text-lg text-background/90 mb-8 drop-shadow-md">
               We celebrate love, family, and new beginnings — we hope you’ll join us as we say ‘I do’. Your presence will make our day complete.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
