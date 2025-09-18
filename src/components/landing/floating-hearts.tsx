@@ -1,56 +1,52 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { Heart, Flower } from 'lucide-react';
 
-const HeartIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    stroke="none"
-    {...props}
-  >
-    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-  </svg>
-);
+const icons = [
+  (props: React.SVGProps<SVGSVGElement>) => <Heart {...props} />,
+  (props: React.SVGProps<SVGSVGElement>) => <Flower {...props} />,
+  () => <>&#x1F496;</>, // Sparkling Heart Emoji
+];
 
-interface Heart {
+interface FloatingElement {
   id: number;
   style: React.CSSProperties;
+  Icon: React.ElementType;
 }
 
 export function FloatingHearts() {
-  const [hearts, setHearts] = useState<Heart[]>([]);
+  const [elements, setElements] = useState<FloatingElement[]>([]);
 
   useEffect(() => {
-    const createHearts = () => {
-      const newHearts: Heart[] = Array.from({ length: 15 }).map((_, i) => ({
+    const createElements = () => {
+      const newElements: FloatingElement[] = Array.from({ length: 25 }).map((_, i) => ({
         id: i,
         style: {
           left: `${Math.random() * 100}%`,
-          animationDuration: `${Math.random() * 5 + 8}s`,
-          animationDelay: `${Math.random() * 5}s`,
-          transform: `scale(${Math.random() * 0.5 + 0.5})`,
-          opacity: Math.random() * 0.5 + 0.2,
+          animationDuration: `${Math.random() * 8 + 10}s`,
+          animationDelay: `${Math.random() * 10}s`,
+          transform: `scale(${Math.random() * 0.6 + 0.4})`,
+          opacity: Math.random() * 0.4 + 0.2,
+          fontSize: `${Math.random() * 1.5 + 0.75}rem`,
         },
+        Icon: icons[Math.floor(Math.random() * icons.length)],
       }));
-      setHearts(newHearts);
+      setElements(newElements);
     };
 
-    createHearts();
+    createElements();
   }, []);
 
   return (
     <div className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none">
-      {hearts.map((heart) => (
+      {elements.map(({ id, style, Icon }) => (
         <div
-          key={heart.id}
+          key={id}
           className="absolute bottom-[-50px] animate-float-slow text-primary/50"
-          style={heart.style}
+          style={style}
         >
-          <HeartIcon className="w-auto h-auto" />
+          <Icon className="w-auto h-auto fill-current" />
         </div>
       ))}
     </div>

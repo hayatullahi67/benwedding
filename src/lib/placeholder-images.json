@@ -5,6 +5,54 @@
       "description": "A beautiful wedding invitation card with floral designs.",
       "imageUrl": "https://picsum.photos/seed/wedding1/400/600",
       "imageHint": "wedding invitation"
+    },
+    {
+      "id": "hero-1",
+      "description": "Close-up of wedding rings resting on delicate white flowers.",
+      "imageUrl": "https://picsum.photos/seed/rings/1920/1080",
+      "imageHint": "wedding rings"
+    },
+    {
+      "id": "hero-2",
+      "description": "A vibrant and lush bouquet of wedding flowers.",
+      "imageUrl": "https://picsum.photos/seed/bouquet/1920/1080",
+      "imageHint": "wedding bouquet"
+    },
+    {
+      "id": "hero-3",
+      "description": "A newly married couple holding hands, showcasing their wedding rings.",
+      "imageUrl": "https://picsum.photos/seed/couplehands/1920/1080",
+      "imageHint": "couple hands"
+    },
+    {
+      "id": "our-story-image",
+      "description": "A romantic silhouette of a couple at sunset.",
+      "imageUrl": "https://picsum.photos/seed/story/600/800",
+      "imageHint": "couple silhouette"
+    },
+    {
+      "id": "memory-1",
+      "description": "Guests dancing at the wedding reception.",
+      "imageUrl": "https://picsum.photos/seed/mem1/600/400",
+      "imageHint": "wedding dance"
+    },
+    {
+      "id": "memory-2",
+      "description": "A candid photo of the couple laughing together.",
+      "imageUrl": "https://picsum.photos/seed/mem2/600/400",
+      "imageHint": "couple laughing"
+    },
+    {
+      "id": "memory-3",
+      "description": "The beautiful wedding cake being cut.",
+      "imageUrl": "https://picsum.photos/seed/mem3/600/400",
+      "imageHint": "wedding cake"
+    },
+    {
+      "id": "memory-4",
+      "description": "A selfie of friends at the wedding party.",
+      "imageUrl": "https://picsum.photos/seed/mem4/600/400",
+      "imageHint": "friends selfie"
     }
   ]
 }
