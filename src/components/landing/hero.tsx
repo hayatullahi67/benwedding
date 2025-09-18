@@ -1,9 +1,9 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { FloatingHearts } from '@/components/landing/floating-hearts';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Carousel, CarouselContent, CarouselItem } from '@/components/ui/carousel';
+import Autoplay from "embla-carousel-autoplay"
 
 export function Hero() {
   const heroImages = PlaceHolderImages.filter(p => p.id.startsWith('hero-'));
@@ -13,6 +13,11 @@ export function Hero() {
       <div className="absolute inset-0 bg-black/50 z-10"></div>
       <Carousel
         opts={{ loop: true }}
+        plugins={[
+            Autoplay({
+              delay: 4000,
+            }),
+          ]}
         className="absolute inset-0 w-full h-full"
       >
         <CarouselContent>
@@ -30,8 +35,6 @@ export function Hero() {
           ))}
         </CarouselContent>
       </Carousel>
-
-      <FloatingHearts />
       
       <div className="container mx-auto px-4 z-20">
         <div className="text-center">

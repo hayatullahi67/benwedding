@@ -6,7 +6,7 @@ export function OurStory() {
   const storyImage = PlaceHolderImages.find(p => p.id === 'our-story-image');
 
   return (
-    <section className="py-24 bg-secondary/30 relative">
+    <section className="py-24 bg-background relative z-10">
       <FloralDecor className="absolute -top-12 right-0 w-64 h-64 text-primary/10 transform translate-x-1/4 -translate-y-1/4 rotate-90" />
       <FloralDecor className="absolute -bottom-12 left-0 w-64 h-64 text-primary/10 transform -translate-x-1/4 translate-y-1/4 -rotate-90" />
       <div className="container mx-auto px-4">
