@@ -1,6 +1,6 @@
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { FloralDecor } from '../shared/floral-decor';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export function OurStory() {
   const storyImage = PlaceHolderImages.find(p => p.id === 'our-story-image');
@@ -11,7 +11,7 @@ export function OurStory() {
       <FloralDecor className="absolute -bottom-12 left-0 w-64 h-64 text-primary/10 transform -translate-x-1/4 translate-y-1/4 -rotate-90" />
       <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="relative w-full max-w-md mx-auto aspect-[3/5]">
+          <div className="relative w-full max-w-md mx-auto aspect-[3/4.5]">
              <div className="absolute inset-0 bg-background/50 rounded-2xl transform -rotate-3"></div>
              {storyImage && (
                 <Image
@@ -21,7 +21,7 @@ export function OurStory() {
                     className="relative object-cover rounded-2xl shadow-2xl transform transition-transform duration-500 hover:scale-105 hover:rotate-2"
                     data-ai-hint={storyImage.imageHint}
                 />
-             )}
+              )}
           </div>
           <div className="text-center md:text-left">
             <h2 className="font-headline text-6xl md:text-7xl text-primary mb-6">Our Story</h2>
