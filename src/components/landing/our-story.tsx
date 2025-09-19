@@ -17,8 +17,7 @@ export function OurStory() {
                 <Image
                     src={storyImage.imageUrl}
                     alt={storyImage.description}
-                    width={600}
-                    height={1000}
+                    fill
                     className="relative object-cover rounded-2xl shadow-2xl transform transition-transform duration-500 hover:scale-105 hover:rotate-2"
                     data-ai-hint={storyImage.imageHint}
                 />
