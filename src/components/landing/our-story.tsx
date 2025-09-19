@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { FloralDecor } from '../shared/floral-decor';
-const weddingInvitation = "https://i.imgur.com/pZ204aJ.jpeg";
 
 export function OurStory() {
+  const weddingInvitation = "https://i.imgur.com/S7jKT3Y.jpeg";
+
   return (
     <section className="py-24 bg-background relative z-10">
       <FloralDecor className="absolute -top-12 right-0 w-64 h-64 text-primary/10 transform translate-x-1/4 -translate-y-1/4 rotate-90" />
