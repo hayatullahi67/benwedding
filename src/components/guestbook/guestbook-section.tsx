@@ -11,16 +11,19 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Heart, Upload } from "lucide-react";
-import { useState, useRef } from "react";
+import { Heart } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
+import { db } from "@/lib/firebase";
+import { collection, addDoc, query, orderBy, onSnapshot, doc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { formatDistanceToNow } from 'date-fns';
 
 const guestbookFormSchema = z.object({
   name: z.string().min(2, {
@@ -34,20 +37,44 @@ const guestbookFormSchema = z.object({
 
 type GuestbookFormValues = z.infer<typeof guestbookFormSchema>;
 
-const mockMemories = [
-    { id: 1, name: "Aunt Carol", message: "So excited for you both! Wishing you a lifetime of happiness.", liked: false, date: "2 days ago", photo: PlaceHolderImages.find(p => p.id === 'memory-1')?.imageUrl },
-    { id: 2, name: "John & Sarah", message: "Can't wait to celebrate with you! The invitation is beautiful.", liked: true, date: "3 days ago", photo: null },
-    { id: 3, name: "Michael P.", message: "Congratulations! So happy to be a part of your special day.", liked: false, date: "5 days ago", photo: PlaceHolderImages.find(p => p.id === 'memory-2')?.imageUrl },
-    { id: 4, name: "The Millers", message: "Wishing you all the best on your journey together. Cheers!", liked: true, date: "1 week ago", photo: null },
-    { id: 5, name: "Cousin Dave", message: "Get ready to party! So thrilled for you two.", liked: false, date: "1 week ago", photo: PlaceHolderImages.find(p => p.id === 'memory-3')?.imageUrl },
-    { id: 6, name: "Grandma Sue", message: "My darlings, I am overjoyed. Can't wait to see you walk down the aisle.", liked: true, date: "2 weeks ago", photo: PlaceHolderImages.find(p => p.id === 'memory-4')?.imageUrl },
-];
+interface Memory {
+    id: string;
+    name: string;
+    message: string;
+    photo?: string | null;
+    createdAt: any;
+    likes: number;
+}
+
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 export function GuestbookSection() {
   const { toast } = useToast();
-  const [memories, setMemories] = useState(mockMemories);
+  const [memories, setMemories] = useState<Memory[]>([]);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [likedMemories, setLikedMemories] = useState<Set<string>>(new Set());
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const q = query(collection(db, "guestbook"), orderBy("createdAt", "desc"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const memoriesData: Memory[] = [];
+        querySnapshot.forEach((doc) => {
+            memoriesData.push({ id: doc.id, ...doc.data() } as Memory);
+        });
+        setMemories(memoriesData);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+      const localLikes = localStorage.getItem("likedMemories");
+      if (localLikes) {
+          setLikedMemories(new Set(JSON.parse(localLikes)));
+      }
+  }, []);
 
   const form = useForm<GuestbookFormValues>({
     resolver: zodResolver(guestbookFormSchema),
@@ -60,43 +87,105 @@ export function GuestbookSection() {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
+        if (file.size > MAX_FILE_SIZE) {
+            toast({
+                variant: "destructive",
+                title: "File is too large",
+                description: "Please upload an image smaller than 2MB.",
+            });
+            setPreview(null);
+            if(fileInputRef.current) fileInputRef.current.value = "";
+            form.setValue("photo", null);
+            return;
+        }
       const reader = new FileReader();
       reader.onloadend = () => {
         setPreview(reader.result as string);
+        form.setValue("photo", reader.result as string);
       };
       reader.readAsDataURL(file);
     } else {
       setPreview(null);
+      form.setValue("photo", null);
     }
   };
 
-  function onSubmit(data: GuestbookFormValues) {
-    const newMemory = {
-        id: memories.length + 1,
-        name: data.name,
-        message: data.message,
-        liked: false,
-        date: "Just now",
-        photo: preview,
-    }
-    setMemories([newMemory, ...memories]);
-    toast({
-      title: "Memory Shared!",
-      description: "Thank you for sharing your beautiful memory with us.",
-    });
-    form.reset();
-    setPreview(null);
-    if(fileInputRef.current) {
-        fileInputRef.current.value = "";
+  async function onSubmit(data: GuestbookFormValues) {
+    setIsSubmitting(true);
+    try {
+        await addDoc(collection(db, "guestbook"), {
+            name: data.name,
+            message: data.message,
+            photo: data.photo || null,
+            createdAt: serverTimestamp(),
+            likes: 0,
+        });
+
+        toast({
+          title: "Memory Shared!",
+          description: "Thank you for sharing your beautiful memory with us.",
+        });
+        form.reset();
+        setPreview(null);
+        if(fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    } catch(error) {
+        console.error("Error adding document: ", error);
+        toast({
+            variant: "destructive",
+            title: "Something went wrong",
+            description: "Could not save your memory. Please try again.",
+        });
+    } finally {
+        setIsSubmitting(false);
     }
   }
 
-  const toggleLike = (id: number) => {
-    setMemories(memories.map(m => m.id === id ? {...m, liked: !m.liked} : m));
+  const toggleLike = async (id: string) => {
+    const memory = memories.find(m => m.id === id);
+    if (!memory) return;
+
+    const newLikedMemories = new Set(likedMemories);
+    const memoryRef = doc(db, "guestbook", id);
+    let newLikes = memory.likes;
+
+    if (newLikedMemories.has(id)) {
+        newLikedMemories.delete(id);
+        newLikes = Math.max(0, memory.likes - 1);
+    } else {
+        newLikedMemories.add(id);
+        newLikes = memory.likes + 1;
+    }
+    
+    setLikedMemories(newLikedMemories);
+    localStorage.setItem("likedMemories", JSON.stringify(Array.from(newLikedMemories)));
+
+    try {
+        await updateDoc(memoryRef, {
+            likes: newLikes
+        });
+    } catch(error) {
+        console.error("Error updating likes:", error);
+        // Revert local state on error
+        const revertedLikes = new Set(likedMemories);
+        if (revertedLikes.has(id)) {
+            revertedLikes.delete(id);
+        } else {
+            revertedLikes.add(id);
+        }
+        setLikedMemories(revertedLikes);
+        localStorage.setItem("likedMemories", JSON.stringify(Array.from(revertedLikes)));
+    }
+  }
+  
+  const formatDate = (date: any) => {
+    if (!date) return "Just now";
+    return formatDistanceToNow(date.toDate(), { addSuffix: true });
   }
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 pt-[20px]">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
             <h1 className="font-headline text-6xl md:text-7xl text-primary">Share Your Memories</h1>
@@ -142,28 +231,31 @@ export function GuestbookSection() {
                   name="photo"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Share a Photo</FormLabel>
+                      <FormLabel>Share a Photo (optional)</FormLabel>
                       <FormControl>
                         <Input 
                           type="file" 
                           accept="image/*"
-                          onChange={(e) => {
-                            field.onChange(e.target.files);
-                            handleFileChange(e);
-                          }}
+                          onChange={handleFileChange}
                           ref={fileInputRef}
+                          disabled={isSubmitting}
                         />
                       </FormControl>
+                      <FormDescription>
+                          Maximum file size: 2MB.
+                      </FormDescription>
                       {preview && (
                         <div className="mt-4 relative w-48 h-48">
-                            <Image src={preview} alt="Preview" layout="fill" className="rounded-lg object-cover"/>
+                            <Image src={preview} alt="Preview" fill className="rounded-lg object-cover"/>
                         </div>
                       )}
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90">Submit Memory</Button>
+                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90" disabled={isSubmitting}>
+                    {isSubmitting ? "Submitting..." : "Submit Memory"}
+                </Button>
               </form>
             </Form>
           </CardContent>
@@ -174,7 +266,7 @@ export function GuestbookSection() {
                 <Card key={memory.id} className="rounded-2xl shadow-md hover:shadow-xl transition-shadow duration-300 flex flex-col overflow-hidden">
                     {memory.photo && (
                        <div className="relative w-full h-48">
-                           <Image src={memory.photo} alt={`Memory from ${memory.name}`} layout="fill" className="object-cover" />
+                           <Image src={memory.photo} alt={`Memory from ${memory.name}`} fill className="object-cover" />
                        </div>
                     )}
                     <CardContent className="p-6 flex flex-col flex-grow">
@@ -184,11 +276,14 @@ export function GuestbookSection() {
                         <div className="flex items-center justify-between mt-4">
                             <div>
                                 <p className="font-semibold text-primary">{memory.name}</p>
-                                <p className="text-xs text-foreground/60">{memory.date}</p>
+                                <p className="text-xs text-foreground/60">{formatDate(memory.createdAt)}</p>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => toggleLike(memory.id)}>
-                                <Heart className={cn("w-5 h-5 transition-colors", memory.liked ? "text-red-500 fill-current" : "text-foreground/50")}/>
-                            </Button>
+                            <div className="flex items-center gap-2">
+                                <span className="text-sm text-foreground/70">{memory.likes || 0}</span>
+                                <Button variant="ghost" size="icon" onClick={() => toggleLike(memory.id)}>
+                                    <Heart className={cn("w-5 h-5 transition-colors", likedMemories.has(memory.id) ? "text-red-500 fill-current" : "text-foreground/50")}/>
+                                </Button>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
