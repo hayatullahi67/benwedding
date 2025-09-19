@@ -3,9 +3,9 @@
   "placeholderImages": [
     {
       "id": "hero-1",
-      "description": "A happy couple at their wedding.",
-      "imageUrl": "https://images.pexels.com/photos/169198/pexels-photo-169198.jpeg",
-      "imageHint": "wedding couple"
+      "description": "A beautiful wedding arch with flowers.",
+      "imageUrl": "https://images.pexels.com/photos/1590137/pexels-photo-1590137.jpeg",
+      "imageHint": "wedding arch"
     },
     {
       "id": "hero-2",
@@ -21,9 +21,9 @@
     },
     {
       "id": "hero-4",
-      "description": "A beautiful wedding arch with flowers.",
-      "imageUrl": "https://images.pexels.com/photos/1590137/pexels-photo-1590137.jpeg",
-      "imageHint": "wedding arch"
+      "description": "A happy couple at their wedding.",
+      "imageUrl": "https://images.pexels.com/photos/169198/pexels-photo-169198.jpeg",
+      "imageHint": "wedding couple"
     },
     {
       "id": "wedding-invitation",
@@ -57,9 +57,9 @@
     },
     {
       "id": "our-story-image",
-      "description": "A couple kissing under a veil.",
-      "imageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTghGQ8JBWOIPzZZGj9j9Vy-kJm6oHs59Mb6g&s",
-      "imageHint": "couple kissing"
+      "description": "A happy couple smiling together.",
+      "imageUrl": "https://images.pexels.com/photos/1730877/pexels-photo-1730877.jpeg",
+      "imageHint": "happy couple"
     }
   ]
 }
