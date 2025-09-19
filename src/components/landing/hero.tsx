@@ -4,34 +4,33 @@ import { useEffect, useState } from "react";
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from "@/lib/utils";
 
 export function Hero() {
   const heroImages = [
     {
       id: "hero-1",
-      imageUrl: "https://images.pexels.com/photos/1024973/pexels-photo-1024973.jpeg",
-      description: "A couple holding hands, showing a wedding ring.",
-      imageHint: "couple hands"
+      imageUrl: "https://images.pexels.com/photos/169198/pexels-photo-169198.jpeg",
+      description: "A happy couple at their wedding.",
+      imageHint: "wedding couple"
     },
     {
       id: "hero-2",
-      imageUrl: "https://images.pexels.com/photos/278849/pexels-photo-278849.jpeg",
+      imageUrl: "https://images.pexels.com/photos/2055236/pexels-photo-2055236.jpeg",
       description: "Close-up of two wedding rings.",
       imageHint: "wedding rings"
     },
     {
       id: "hero-3",
-      imageUrl: "https://images.pexels.com/photos/265856/pexels-photo-265856.jpeg",
-      description: "A bouquet of pink roses.",
-      imageHint: "roses bouquet"
+      imageUrl: "https://images.pexels.com/photos/931177/pexels-photo-931177.jpeg",
+      description: "A beautiful wedding bouquet.",
+      imageHint: "wedding bouquet"
     },
     {
       id: "hero-4",
-      imageUrl: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg",
-      description: "A beautiful wedding bouquet on a table.",
-      imageHint: "wedding bouquet"
+      imageUrl: "https://images.pexels.com/photos/3371363/pexels-photo-3371363.jpeg",
+      description: "A couple holding hands showing their wedding rings.",
+      imageHint: "couple hands"
     }
   ];
   
