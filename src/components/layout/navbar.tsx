@@ -33,8 +33,9 @@ export function Navbar() {
           variant="ghost"
           asChild
           className={cn(
-            'text-foreground/80 hover:text-foreground hover:bg-accent/50 transition-colors',
-            isMobile && 'w-full justify-start text-lg py-6'
+            'hover:text-foreground hover:bg-accent/50 transition-colors',
+            isMobile && 'w-full justify-start text-lg py-6',
+            isScrolled ? 'text-green-500' : 'md:text-white text-foreground/80'
           )}
           onClick={() => isMobile && setIsMenuOpen(false)}
         >
@@ -55,7 +56,10 @@ export function Navbar() {
         <div className="flex items-center justify-between h-20">
           <Link href="/" className="flex items-center gap-2 group">
             <Heart className="w-6 h-6 text-primary transition-transform group-hover:scale-110" />
-            <span className="text-xl font-bold font-headline text-foreground tracking-wider">
+            <span  className={cn(
+    "text-xl font-bold font-headline tracking-wider transition-colors duration-300",
+    isScrolled ? "text-green-500" : "text-white "
+  )}>
               D & B
             </span>
           </Link>
@@ -65,7 +69,7 @@ export function Navbar() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button variant="ghost" size="icon" className=''>
                   <Menu className="h-6 w-6" />
                   <span className="sr-only">Open menu</span>
                 </Button>

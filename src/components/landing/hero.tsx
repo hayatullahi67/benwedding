@@ -8,14 +8,42 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { cn } from "@/lib/utils";
 
 export function Hero() {
-  const heroImages = PlaceHolderImages.filter(p => p.id.startsWith('hero-'));
+  const heroImages = [
+    {
+      id: "hero-1",
+      imageUrl: "https://images.pexels.com/photos/1024973/pexels-photo-1024973.jpeg",
+      description: "A couple holding hands, showing a wedding ring.",
+      imageHint: "couple hands"
+    },
+    {
+      id: "hero-2",
+      imageUrl: "https://images.pexels.com/photos/278849/pexels-photo-278849.jpeg",
+      description: "Close-up of two wedding rings.",
+      imageHint: "wedding rings"
+    },
+    {
+      id: "hero-3",
+      imageUrl: "https://images.pexels.com/photos/265856/pexels-photo-265856.jpeg",
+      description: "A bouquet of pink roses.",
+      imageHint: "roses bouquet"
+    },
+    {
+      id: "hero-4",
+      imageUrl: "https://images.pexels.com/photos/1024993/pexels-photo-1024993.jpeg",
+      description: "A beautiful wedding bouquet on a table.",
+      imageHint: "wedding bouquet"
+    }
+  ];
+  
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % heroImages.length);
-    }, 6000);
-    return () => clearInterval(interval);
+    if (heroImages.length > 1) {
+      const interval = setInterval(() => {
+        setCurrent((prev) => (prev + 1) % heroImages.length);
+      }, 6000);
+      return () => clearInterval(interval);
+    }
   }, [heroImages.length]);
 
   return (
