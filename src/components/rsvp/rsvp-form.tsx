@@ -84,6 +84,15 @@ export function RsvpForm() {
   const form = useForm<RsvpFormValues>({
     resolver: zodResolver(rsvpFormSchema),
     mode: "onChange",
+    defaultValues: {
+      email: "",
+      attending: undefined,
+      name: "",
+      phone: "",
+      guests: "",
+      relation: "",
+      directions: "",
+    }
   });
 
   const watchAttending = form.watch("attending");
