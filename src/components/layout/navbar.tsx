@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Menu, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -16,14 +17,21 @@ const navLinks = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp';
+  const showSolidNav = isScrolled || isSolidNavPage;
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener('scroll', handleScroll);
+    if (!isSolidNavPage) {
+        window.addEventListener('scroll', handleScroll);
+        handleScroll();
+    }
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [pathname, isSolidNavPage]);
 
   const NavLinkItems = ({ isMobile }: { isMobile?: boolean }) => (
     <>
@@ -35,7 +43,7 @@ export function Navbar() {
           className={cn(
             'hover:text-foreground hover:bg-accent/50 transition-colors',
             isMobile && 'w-full justify-start text-lg py-6',
-            isScrolled ? 'text-green-500' : 'md:text-white text-foreground/80'
+            showSolidNav ? 'text-foreground/80' : 'md:text-white text-foreground/80'
           )}
           onClick={() => isMobile && setIsMenuOpen(false)}
         >
@@ -49,7 +57,7 @@ export function Navbar() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        isScrolled ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
+        showSolidNav ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
       )}
     >
       <div className="container mx-auto px-4">
@@ -57,9 +65,9 @@ export function Navbar() {
           <Link href="/" className="flex items-center gap-2 group">
             <Heart className="w-6 h-6 text-primary transition-transform group-hover:scale-110" />
             <span  className={cn(
-    "text-xl font-bold font-headline tracking-wider transition-colors duration-300",
-    isScrolled ? "text-green-500" : "text-white "
-  )}>
+              "text-xl font-bold font-headline tracking-wider transition-colors duration-300",
+              showSolidNav ? "text-primary" : "text-white"
+            )}>
               D & B
             </span>
           </Link>
@@ -69,8 +77,8 @@ export function Navbar() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild >
-                  <Button variant="ghost" size="icon" className='bg-[white]' >
-                  <Menu className="h-6 w-6 " />
+                  <Button variant="ghost" size="icon" className={cn(showSolidNav ? 'bg-transparent' : 'bg-white/80 hover:bg-white')} >
+                  <Menu className={cn("h-6 w-6", showSolidNav ? 'text-primary' : 'text-primary/80')} />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
