@@ -37,11 +37,42 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 const rsvpFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   attending: z.enum(["yes", "no"], { required_error: "Please select an option." }),
-  name: z.string().min(2, { message: "Your name must be at least 2 characters." }),
+  name: z.string().optional(),
   phone: z.string().optional(),
-  guests: z.string().min(1, { message: "Please select the number of guests." }),
-  relation: z.string({ required_error: "Please select your connection." }),
-  directions: z.string({ required_error: "Please let us know if you need directions." }),
+  guests: z.string().optional(),
+  relation: z.string().optional(),
+  directions: z.string().optional(),
+}).superRefine((data, ctx) => {
+    if (data.attending === "yes") {
+        if (!data.name || data.name.length < 2) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["name"],
+                message: "Your name must be at least 2 characters.",
+            });
+        }
+        if (!data.guests) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["guests"],
+                message: "Please select the number of guests.",
+            });
+        }
+        if (!data.relation) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["relation"],
+                message: "Please select your connection.",
+            });
+        }
+        if (!data.directions) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                path: ["directions"],
+                message: "Please let us know if you need directions.",
+            });
+        }
+    }
 });
 
 type RsvpFormValues = z.infer<typeof rsvpFormSchema>;
@@ -106,77 +137,83 @@ export function RsvpForm() {
                     </FormItem>
                   )}
                 />
-                <FormField control={form.control} name="name" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Your Name *</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Your full name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField control={form.control} name="phone" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input type="tel" placeholder="(123) 456-7890" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField control={form.control} name="guests" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Number of guests attending (including yourself) *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select number of guests" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="1">1</SelectItem>
-                          <SelectItem value="2">2</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField control={form.control} name="relation" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Please let us know your connection to the couple *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select your relation" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="bride-guest">Bride's guest</SelectItem>
-                          <SelectItem value="groom-guest">Groom's guest</SelectItem>
-                          <SelectItem value="family">Family</SelectItem>
-                          <SelectItem value="friend">Friend</SelectItem>
-                          <SelectItem value="other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField control={form.control} name="directions" render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Do you need Direction to Locate the Venue? *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="yes">Yes</SelectItem>
-                          <SelectItem value="no">No</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+
+                {watchAttending === 'yes' && (
+                  <>
+                    <FormField control={form.control} name="name" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Your Name *</FormLabel>
+                          <FormControl>
+                            <Input placeholder="Your full name" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="phone" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Phone Number</FormLabel>
+                          <FormControl>
+                            <Input type="tel" placeholder="(123) 456-7890" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="guests" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Number of guests attending (including yourself) *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Select number of guests" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="1">1</SelectItem>
+                              <SelectItem value="2">2</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="relation" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Please let us know your connection to the couple *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Select your relation" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="bride-guest">Bride's guest</SelectItem>
+                              <SelectItem value="groom-guest">Groom's guest</SelectItem>
+                              <SelectItem value="family">Family</SelectItem>
+                              <SelectItem value="friend">Friend</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField control={form.control} name="directions" render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Do you need Direction to Locate the Venue? *</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger><SelectValue placeholder="Select an option" /></SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="yes">Yes</SelectItem>
+                              <SelectItem value="no">No</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                
                 <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl">Confirm Attendance</Button>
               </form>
             </Form>
