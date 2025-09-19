@@ -104,10 +104,20 @@ export function RsvpForm() {
     setIsSubmitting(true);
     setSubmittedData(data);
 
+    if (data.attending === 'no') {
+      setIsSubmitted(true);
+      setIsSubmitting(false);
+      form.reset();
+      return;
+    }
+
     if (data.attending === "yes" && data.name) {
       try {
         const result = await sendRsvpConfirmation({ email: data.email, name: data.name });
-        if (!result.success) {
+        if (result.success) {
+          setIsSubmitted(true);
+          form.reset();
+        } else {
            toast({
             variant: "destructive",
             title: "Email Failed",
@@ -120,12 +130,12 @@ export function RsvpForm() {
           title: "Something went wrong",
           description: "An unexpected error occurred. Please try again.",
         });
+      } finally {
+        setIsSubmitting(false);
       }
+    } else {
+      setIsSubmitting(false);
     }
-    
-    setIsSubmitted(true);
-    setIsSubmitting(false);
-    form.reset();
   }
 
   return (
