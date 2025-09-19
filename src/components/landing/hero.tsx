@@ -64,10 +64,10 @@ export function Hero() {
       ))}
 
       {/* Dark overlay to make text visible */}
-      <div className="absolute inset-0 bg-black/50" />
+      <div className=" absolute inset-0 bg-black/50" />
 
       {/* Hero content */}
-      <div className="relative z-10 text-center text-white px-6 max-w-3xl">
+      <div className="relative z-10 text-center text-white max-md:pt-[100px] px-6 max-w-3xl">
         <h2 className="text-lg md:text-xl text-white/80 mb-4 drop-shadow-md">
           Together with our families, we joyfully invite you to celebrate our wedding
         </h2>
