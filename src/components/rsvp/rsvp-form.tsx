@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-
+import { sendRsvpConfirmation } from '@/ai/flows/send-rsvp-confirmation';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -32,7 +32,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useToast } from '@/hooks/use-toast';
 
 const rsvpFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -80,6 +80,9 @@ type RsvpFormValues = z.infer<typeof rsvpFormSchema>;
 export function RsvpForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submittedData, setSubmittedData] = useState<RsvpFormValues | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
+
 
   const form = useForm<RsvpFormValues>({
     resolver: zodResolver(rsvpFormSchema),
@@ -96,13 +99,33 @@ export function RsvpForm() {
   });
 
   const watchAttending = form.watch("attending");
-  const invitationImage = PlaceHolderImages.find(p => p.id === 'wedding-invitation');
 
-
-  function onSubmit(data: RsvpFormValues) {
-    console.log(data);
+  async function onSubmit(data: RsvpFormValues) {
+    setIsSubmitting(true);
     setSubmittedData(data);
+
+    if (data.attending === "yes" && data.name) {
+      try {
+        const result = await sendRsvpConfirmation({ email: data.email, name: data.name });
+        if (!result.success) {
+           toast({
+            variant: "destructive",
+            title: "Email Failed",
+            description: "Could not send the confirmation email. Please try again.",
+          });
+        }
+      } catch (error) {
+         toast({
+          variant: "destructive",
+          title: "Something went wrong",
+          description: "An unexpected error occurred. Please try again.",
+        });
+      }
+    }
+    
     setIsSubmitted(true);
+    setIsSubmitting(false);
+    form.reset();
   }
 
   return (
@@ -223,7 +246,9 @@ export function RsvpForm() {
                   </>
                 )}
                 
-                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl">Confirm Attendance</Button>
+                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl" disabled={isSubmitting}>
+                  {isSubmitting ? 'Submitting...' : 'Confirm Attendance'}
+                </Button>
               </form>
             </Form>
           </CardContent>
@@ -241,9 +266,9 @@ export function RsvpForm() {
                 : 'Thank you for letting us know. You will be missed!'}
             </DialogDescription>
           </DialogHeader>
-          {submittedData?.attending === 'yes' && invitationImage && (
+          {submittedData?.attending === 'yes' && (
              <div className="py-4">
-                <Image src={invitationImage.imageUrl} alt={invitationImage.description} width={200} height={300} className="mx-auto rounded-lg shadow-lg" data-ai-hint={invitationImage.imageHint} />
+                <Image src="/images/benwedding.jpg" alt="Wedding Invitation" width={200} height={300} className="mx-auto rounded-lg shadow-lg" data-ai-hint="wedding invitation" />
              </div>
           )}
           <Button onClick={() => setIsSubmitted(false)}>Close</Button>

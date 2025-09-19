@@ -11,7 +11,7 @@ export function OurStory() {
           <div className="relative w-full max-w-md mx-auto aspect-[3/4.5]">
              <div className="absolute inset-0 bg-background/50 rounded-2xl transform -rotate-3"></div>
               <Image
-                  src="/images/wedding-invitation.jpg"
+                  src="/images/benwedding.jpg"
                   alt="Wedding invitation for Deborah and Benjamin"
                   fill
                   className="relative object-cover rounded-2xl shadow-2xl transform transition-transform duration-500 hover:scale-105 hover:rotate-2"

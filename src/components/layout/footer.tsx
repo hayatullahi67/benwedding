@@ -13,8 +13,8 @@ export function Footer() {
           <div className="flex flex-col gap-2">
             <p className="text-sm">Have questions? Reach out:</p>
             <div className="flex gap-4 justify-center">
-              <a href="tel:+1234567890" className="text-sm font-medium hover:text-primary transition-colors">+1 (234) 567-890</a>
-              <a href="tel:+0987654321" className="text-sm font-medium hover:text-primary transition-colors">+0 (987) 654-321</a>
+              <a href="tel:+1234567890" className="text-sm font-medium hover:text-primary transition-colors">08169536118</a>
+              <a href="tel:+0987654321" className="text-sm font-medium hover:text-primary transition-colors">08030402961</a>
             </div>
           </div>
           <div className="flex items-center gap-4">
