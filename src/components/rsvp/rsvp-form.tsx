@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import { sendRsvpConfirmation } from '@/ai/flows/send-rsvp-confirmation';
+import emailjs from '@emailjs/browser';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -83,7 +83,6 @@ export function RsvpForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-
   const form = useForm<RsvpFormValues>({
     resolver: zodResolver(rsvpFormSchema),
     mode: "onChange",
@@ -112,23 +111,39 @@ export function RsvpForm() {
     }
 
     if (data.attending === "yes" && data.name) {
+      const serviceId = 'service_r4ug4nt';
+      const templateId = 'template_4lccsji';
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+      if (!publicKey) {
+        console.error("EmailJS public key is not defined.");
+        toast({
+          variant: "destructive",
+          title: "Configuration Error",
+          description: "The email service is not configured correctly. Please contact support.",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      const imageUrl = `${window.location.origin}/images/benwedding.jpg`;
+      
+      const templateParams = {
+        name: data.name,
+        email: data.email,
+        image_url: imageUrl,
+      };
+
       try {
-        const result = await sendRsvpConfirmation({ email: data.email, name: data.name });
-        if (result.success) {
-          setIsSubmitted(true);
-          form.reset();
-        } else {
-           toast({
-            variant: "destructive",
-            title: "Email Failed",
-            description: "Could not send the confirmation email. Please try again.",
-          });
-        }
+        await emailjs.send(serviceId, templateId, templateParams, publicKey);
+        setIsSubmitted(true);
+        form.reset();
       } catch (error) {
+         console.error('EmailJS error:', error);
          toast({
           variant: "destructive",
           title: "Something went wrong",
-          description: "An unexpected error occurred. Please try again.",
+          description: "Could not send your confirmation email. Please try again.",
         });
       } finally {
         setIsSubmitting(false);
