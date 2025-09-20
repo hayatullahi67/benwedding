@@ -126,7 +126,7 @@ export function RsvpForm() {
         return;
       }
       
-      const imageUrl = `${window.location.origin}/images/benwedding.jpg`;
+      const imageUrl = `https://i.imgur.com/S7jKT3Y.jpeg`;
       
       const templateParams = {
         name: data.name,
