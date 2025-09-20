@@ -39,15 +39,43 @@ const sendConfirmationEmail = ai.defineTool(
     outputSchema: z.boolean().describe('Indicates whether the email was sent successfully.'),
   },
   async ({ email, name }) => {
+    // This is the publicly hosted URL for the image.
+    const imageUrl = 'https://i.imgur.com/pY12x8x.jpeg';
+
+    const emailHtml = `
+      <div style="font-family: sans-serif; max-width: 600px; margin: auto; border: 1px solid #ddd; border-radius: 12px; padding: 20px;">
+        <div style="text-align: center;">
+          <h1 style="color: #B76E58; font-size: 28px;">Thank You for your RSVP, ${name}!</h1>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+          <p style="font-size: 16px; color: #0F4D38;">
+            We are so excited to celebrate with you! Your confirmation has been received.
+          </p>
+          <p style="font-size: 16px; color: #0F4D38;">
+            Here is a copy of our wedding invitation for your convenience.
+          </p>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+          <img 
+            src="${imageUrl}" 
+            alt="Wedding Invitation" 
+            style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);" 
+          />
+        </div>
+        <div style="margin-top: 30px; text-align: center; font-size: 14px; color: #555;">
+          <p>With love,</p>
+          <p style="font-size: 24px; color: #B76E58; margin-top: 5px;">Deborah & Benjamin</p>
+        </div>
+      </div>
+    `;
+
     console.log('--- Sending RSVP Confirmation Email ---');
     console.log(`To: ${email}`);
     console.log(`Subject: You're Invited! Confirmation for Deborah & Benjamin's Wedding`);
-    console.log(`Body:`);
-    console.log(`Dear ${name},`);
-    console.log(`Thank you for your RSVP! We are so excited to celebrate with you.`);
-    console.log(`Please see the attached invitation for details.`);
-    console.log(`Image: /images/benwedding.jpg`);
+    console.log('Body:');
+    console.log(emailHtml);
     console.log('------------------------------------');
+    
     // Simulate a successful email send
     return true;
   }

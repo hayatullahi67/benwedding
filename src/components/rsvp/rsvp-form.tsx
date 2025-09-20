@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
-import emailjs from '@emailjs/browser';
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -31,8 +30,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
+import { sendRsvpConfirmation } from '@/ai/flows/send-rsvp-confirmation';
 
 const rsvpFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -110,33 +109,17 @@ export function RsvpForm() {
       return;
     }
 
-    if (data.attending === "yes" && data.name) {
-      const serviceId = 'service_r4ug4nt';
-      const templateId = 'template_4lccsji';
-      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
-
-      if (!publicKey) {
-        console.error("EmailJS public key is not defined.");
-        toast({
-          variant: "destructive",
-          title: "Configuration Error",
-          description: "The email service is not configured correctly. Please contact support.",
-        });
-        setIsSubmitting(false);
-        return;
-      }
-      
-      const templateParams = {
-        name: data.name,
-        to_email: data.email,
-      };
-
+    if (data.attending === "yes" && data.name && data.email) {
       try {
-        await emailjs.send(serviceId, templateId, templateParams, publicKey);
-        setIsSubmitted(true);
-        form.reset();
+        const result = await sendRsvpConfirmation({ name: data.name, email: data.email });
+        if (result.success) {
+          setIsSubmitted(true);
+          form.reset();
+        } else {
+          throw new Error("Flow reported failure");
+        }
       } catch (error) {
-         console.error('EmailJS error:', error);
+         console.error('AI Flow error:', error);
          toast({
           variant: "destructive",
           title: "Something went wrong",
@@ -268,7 +251,7 @@ export function RsvpForm() {
                   </>
                 )}
                 
-                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl" disabled={isSubmitting}>
+                <Button type="submit" size="lg" className="w-full bg-foreground text-background hover:bg-foreground/90 rounded-xl" disabled={!watchAttending || isSubmitting}>
                   {isSubmitting ? 'Submitting...' : 'Confirm Attendance'}
                 </Button>
               </form>
