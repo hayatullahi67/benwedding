@@ -10,6 +10,7 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
+import { Resend } from 'resend';
 
 const RsvpConfirmationInputSchema = z.object({
   email: z.string().email().describe('The email address of the guest.'),
@@ -26,8 +27,6 @@ export async function sendRsvpConfirmation(input: RsvpConfirmationInput): Promis
   return sendRsvpConfirmationFlow(input);
 }
 
-// In a real application, you would use an email service like Resend or SendGrid.
-// For this prototype, we will simulate sending an email by logging to the console.
 const sendConfirmationEmail = ai.defineTool(
   {
     name: 'sendConfirmationEmail',
@@ -39,6 +38,8 @@ const sendConfirmationEmail = ai.defineTool(
     outputSchema: z.boolean().describe('Indicates whether the email was sent successfully.'),
   },
   async ({ email, name }) => {
+    const resend = new Resend(process.env.RESEND_API_KEY);
+
     // This is the publicly hosted URL for the image.
     const imageUrl = 'https://i.imgur.com/pY12x8x.jpeg';
 
@@ -69,15 +70,19 @@ const sendConfirmationEmail = ai.defineTool(
       </div>
     `;
 
-    console.log('--- Sending RSVP Confirmation Email ---');
-    console.log(`To: ${email}`);
-    console.log(`Subject: You're Invited! Confirmation for Deborah & Benjamin's Wedding`);
-    console.log('Body:');
-    console.log(emailHtml);
-    console.log('------------------------------------');
-    
-    // Simulate a successful email send
-    return true;
+    try {
+      await resend.emails.send({
+        from: 'onboarding@resend.dev', // This must be a verified domain in Resend
+        to: email,
+        subject: "You're Invited! Confirmation for Deborah & Benjamin's Wedding",
+        html: emailHtml,
+      });
+      console.log(`Email sent to ${email}`);
+      return true;
+    } catch (error) {
+      console.error('Error sending email:', error);
+      return false;
+    }
   }
 );
 
