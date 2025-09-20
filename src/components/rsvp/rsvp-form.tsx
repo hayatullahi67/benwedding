@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -31,7 +31,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { useToast } from '@/hooks/use-toast';
-import { sendRsvpConfirmation } from '@/ai/flows/send-rsvp-confirmation';
+import emailjs from '@emailjs/browser';
 
 const rsvpFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -110,16 +110,23 @@ export function RsvpForm() {
     }
 
     if (data.attending === "yes" && data.name && data.email) {
+      const templateParams = {
+        name: data.name,
+        to_email: data.email,
+        image_url: 'https://i.imgur.com/pY12x8x.jpeg',
+      };
+      
       try {
-        const result = await sendRsvpConfirmation({ name: data.name, email: data.email });
-        if (result.success) {
-          setIsSubmitted(true);
-          form.reset();
-        } else {
-          throw new Error("Flow reported failure");
-        }
+        await emailjs.send(
+          'service_r4ug4nt',
+          'template_4lccsji',
+          templateParams,
+          process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+        );
+        setIsSubmitted(true);
+        form.reset();
       } catch (error) {
-         console.error('AI Flow error:', error);
+         console.error('EmailJS error:', error);
          toast({
           variant: "destructive",
           title: "Something went wrong",
