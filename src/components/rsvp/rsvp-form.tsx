@@ -130,7 +130,7 @@ export function RsvpForm() {
       
       const templateParams = {
         name: data.name,
-        email: data.email,
+        to_email: data.email, // Explicitly set the recipient's email
         image_url: imageUrl,
       };
 

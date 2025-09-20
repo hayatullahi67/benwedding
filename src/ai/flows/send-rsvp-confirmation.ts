@@ -58,7 +58,6 @@ const sendRsvpConfirmationFlow = ai.defineFlow(
     name: 'sendRsvpConfirmationFlow',
     inputSchema: RsvpConfirmationInputSchema,
     outputSchema: RsvpConfirmationOutputSchema,
-    tools: [sendConfirmationEmail],
   },
   async (input) => {
     const success = await sendConfirmationEmail(input);
