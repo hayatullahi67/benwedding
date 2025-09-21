@@ -133,7 +133,7 @@ export function RsvpForm() {
         if (data.attending === "yes" && data.name && data.email) {
 
             const emailBody = `
-              <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+              <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.6;">
                 <p>Thank you for confirming your attendance! 💕</p>
                 <p>We’re so excited to celebrate this special day with you.</p>
                 <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
