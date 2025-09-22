@@ -31,7 +31,6 @@ import {
   CardContent,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -53,6 +52,13 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { RsvpFormFields } from "./rsvp-form-fields";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
@@ -63,9 +69,6 @@ import {
   Trash2,
   Send,
   UserPlus,
-  Users,
-  UserCheck,
-  UserX,
   Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -304,30 +307,6 @@ export function DashboardSection() {
     }
   };
 
-  const FilterButton = ({
-    value,
-    label,
-    icon: Icon,
-  }: {
-    value: "all" | "yes" | "no";
-    label: string;
-    icon: React.ElementType;
-  }) => (
-    <Button
-      variant={filter === value ? "default" : "outline"}
-      onClick={() => setFilter(value)}
-      className={cn(
-        "transition-all duration-300",
-        filter === value
-          ? "bg-primary text-primary-foreground"
-          : "bg-background/70 text-foreground"
-      )}
-    >
-      <Icon className="mr-2 h-4 w-4" />
-      {label}
-    </Button>
-  );
-
   return (
     <div className="container mx-auto px-4">
       <div className="max-w-7xl mx-auto">
@@ -341,28 +320,33 @@ export function DashboardSection() {
         </header>
 
         <Card className="rounded-2xl shadow-lg p-4 md:p-6 bg-background/80 mb-8">
-            <div className="flex flex-col gap-4">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="relative">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="text"
-                            placeholder="Filter by name..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 w-full"
-                        />
-                    </div>
-                    <Button onClick={openAddModal} className="w-full bg-foreground text-background hover:bg-foreground/90">
-                        <UserPlus className="mr-2 h-4 w-4" />
-                        Add Guest
-                    </Button>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="relative md:col-span-1">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        type="text"
+                        placeholder="Filter by name..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-9 w-full"
+                    />
                 </div>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                    <FilterButton value="all" label="All Guests" icon={Users} />
-                    <FilterButton value="yes" label="Coming" icon={UserCheck} />
-                    <FilterButton value="no" label="Not Coming" icon={UserX} />
+                <div className="md:col-span-1">
+                    <Select onValueChange={(value) => setFilter(value as "all" | "yes" | "no")} value={filter}>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Filter by attendance" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">All Guests</SelectItem>
+                            <SelectItem value="yes">Coming</SelectItem>
+                            <SelectItem value="no">Not Coming</SelectItem>
+                        </SelectContent>
+                    </Select>
                 </div>
+                <Button onClick={openAddModal} className="w-full bg-foreground text-background hover:bg-foreground/90 md:col-span-1">
+                    <UserPlus className="mr-2 h-4 w-4" />
+                    Add Guest
+                </Button>
             </div>
         </Card>
 
@@ -511,3 +495,5 @@ export function DashboardSection() {
     </div>
   );
 }
+
+    
