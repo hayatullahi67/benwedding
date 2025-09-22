@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -22,14 +23,15 @@ export function Navbar() {
   useEffect(() => {
     const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp' || pathname === '/clientdashboard';
     
+    // Set initial state based on path
+    setShowSolidNav(isSolidNavPage);
+
     const handleScroll = () => {
       const isScrolled = window.scrollY > 10;
       setShowSolidNav(isScrolled || isSolidNavPage);
     };
 
-    handleScroll(); // Set initial state
     window.addEventListener('scroll', handleScroll);
-
     return () => window.removeEventListener('scroll', handleScroll);
   }, [pathname]);
 
