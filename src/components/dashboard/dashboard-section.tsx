@@ -17,6 +17,7 @@ import {
   getDocs,
 } from "firebase/firestore";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -65,6 +66,7 @@ import {
   Users,
   UserCheck,
   UserX,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
@@ -115,6 +117,7 @@ export function DashboardSection() {
   const [rsvps, setRsvps] = useState<RsvpEntry[]>([]);
   const [filteredRsvps, setFilteredRsvps] = useState<RsvpEntry[]>([]);
   const [filter, setFilter] = useState<"all" | "yes" | "no">("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingRsvp, setEditingRsvp] = useState<RsvpEntry | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -146,11 +149,21 @@ export function DashboardSection() {
 
   useEffect(() => {
     let filtered = rsvps;
+
+    // Filter by attendance status
     if (filter !== "all") {
-      filtered = rsvps.filter((rsvp) => rsvp.attending === filter);
+      filtered = filtered.filter((rsvp) => rsvp.attending === filter);
     }
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter((rsvp) =>
+        rsvp.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
     setFilteredRsvps(filtered);
-  }, [rsvps, filter]);
+  }, [rsvps, filter, searchTerm]);
 
   const handleEdit = (rsvp: RsvpEntry) => {
     setEditingRsvp(rsvp);
@@ -329,15 +342,27 @@ export function DashboardSection() {
 
         <Card className="rounded-2xl shadow-lg p-4 md:p-6 bg-background/80 mb-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                     <FilterButton value="all" label="All Guests" icon={Users} />
                     <FilterButton value="yes" label="Coming" icon={UserCheck} />
                     <FilterButton value="no" label="Not Coming" icon={UserX} />
                 </div>
-                <Button onClick={openAddModal} className="w-full md:w-auto bg-foreground text-background hover:bg-foreground/90">
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add Guest
-                </Button>
+                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
+                    <div className="relative w-full sm:w-auto">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                          type="text"
+                          placeholder="Filter by name..."
+                          value={searchTerm}
+                          onChange={(e) => setSearchTerm(e.target.value)}
+                          className="pl-9 w-full sm:w-[200px] lg:w-[250px]"
+                      />
+                    </div>
+                    <Button onClick={openAddModal} className="w-full sm:w-auto bg-foreground text-background hover:bg-foreground/90">
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Add Guest
+                    </Button>
+                </div>
             </div>
         </Card>
 
@@ -486,5 +511,3 @@ export function DashboardSection() {
     </div>
   );
 }
-
-    
