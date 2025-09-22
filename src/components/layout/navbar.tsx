@@ -15,23 +15,24 @@ const navLinks = [
 ];
 
 export function Navbar() {
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showSolidNav, setShowSolidNav] = useState(false);
   const pathname = usePathname();
 
-  const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp' || pathname === '/clientdashboard';
-  const showSolidNav = isScrolled || isSolidNavPage;
-
   useEffect(() => {
+    const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp' || pathname === '/clientdashboard';
+    
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      const isScrolled = window.scrollY > 10;
+      setShowSolidNav(isScrolled || isSolidNavPage);
     };
-    if (!isSolidNavPage) {
-        window.addEventListener('scroll', handleScroll);
-        handleScroll();
-    }
+
+    handleScroll(); // Set initial state
+    window.addEventListener('scroll', handleScroll);
+
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname, isSolidNavPage]);
+  }, [pathname]);
+
 
   const NavLinkItems = ({ isMobile }: { isMobile?: boolean }) => (
     <>
