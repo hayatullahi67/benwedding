@@ -12,7 +12,6 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/guestbook', label: 'Guestbook' },
   { href: '/rsvp', label: 'RSVP' },
-  { href: '/clientdashboard', label: 'Dashboard' },
 ];
 
 export function Navbar() {
