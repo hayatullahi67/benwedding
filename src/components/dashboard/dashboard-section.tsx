@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -68,6 +69,7 @@ import {
 import { cn } from "@/lib/utils";
 import emailjs from "@emailjs/browser";
 import { invitationImageBase64 } from "./invitation-image";
+import { Form } from "@/components/ui/form";
 
 const rsvpFormSchema = z
   .object({
@@ -466,17 +468,19 @@ export function DashboardSection() {
               {editingRsvp ? "Update the details for this guest." : "Fill in the details to add a new guest to the list."}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
-             <RsvpFormFields form={form} />
-             <DialogFooter>
-                <DialogClose asChild>
-                    <Button type="button" variant="outline">Cancel</Button>
-                </DialogClose>
-                <Button type="submit" disabled={isSubmitting} className="bg-foreground text-background hover:bg-foreground/90">
-                    {isSubmitting ? "Saving..." : "Save Guest"}
-                </Button>
-            </DialogFooter>
-          </form>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 pt-4">
+              <RsvpFormFields form={form} />
+              <DialogFooter>
+                  <DialogClose asChild>
+                      <Button type="button" variant="outline">Cancel</Button>
+                  </DialogClose>
+                  <Button type="submit" disabled={isSubmitting} className="bg-foreground text-background hover:bg-foreground/90">
+                      {isSubmitting ? "Saving..." : "Save Guest"}
+                  </Button>
+              </DialogFooter>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
     </div>
