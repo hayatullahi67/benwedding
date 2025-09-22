@@ -12,6 +12,7 @@ const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/guestbook', label: 'Guestbook' },
   { href: '/rsvp', label: 'RSVP' },
+  { href: '/clientdashboard', label: 'Dashboard' },
 ];
 
 export function Navbar() {
@@ -19,7 +20,7 @@ export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp';
+  const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp' || pathname === '/clientdashboard';
   const showSolidNav = isScrolled || isSolidNavPage;
 
   useEffect(() => {
