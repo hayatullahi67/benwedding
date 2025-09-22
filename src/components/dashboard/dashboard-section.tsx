@@ -341,27 +341,27 @@ export function DashboardSection() {
         </header>
 
         <Card className="rounded-2xl shadow-lg p-4 md:p-6 bg-background/80 mb-8">
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                    <FilterButton value="all" label="All Guests" icon={Users} />
-                    <FilterButton value="yes" label="Coming" icon={UserCheck} />
-                    <FilterButton value="no" label="Not Coming" icon={UserX} />
-                </div>
-                <div className="flex flex-col sm:flex-row items-center gap-4 w-full md:w-auto">
-                    <div className="relative w-full sm:w-auto">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                      <Input
-                          type="text"
-                          placeholder="Filter by name..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          className="pl-9 w-full sm:w-[200px] lg:w-[250px]"
-                      />
+            <div className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="relative">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="text"
+                            placeholder="Filter by name..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="pl-9 w-full"
+                        />
                     </div>
-                    <Button onClick={openAddModal} className="w-full sm:w-auto bg-foreground text-background hover:bg-foreground/90">
+                    <Button onClick={openAddModal} className="w-full bg-foreground text-background hover:bg-foreground/90">
                         <UserPlus className="mr-2 h-4 w-4" />
                         Add Guest
                     </Button>
+                </div>
+                <div className="flex items-center justify-center gap-2 flex-wrap">
+                    <FilterButton value="all" label="All Guests" icon={Users} />
+                    <FilterButton value="yes" label="Coming" icon={UserCheck} />
+                    <FilterButton value="no" label="Not Coming" icon={UserX} />
                 </div>
             </div>
         </Card>
