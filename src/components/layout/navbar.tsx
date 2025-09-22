@@ -18,9 +18,16 @@ const navLinks = [
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showSolidNav, setShowSolidNav] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted) return;
+
     const isSolidNavPage = pathname === '/guestbook' || pathname === '/rsvp' || pathname === '/clientdashboard';
     
     // Set initial state based on path
@@ -30,11 +37,15 @@ export function Navbar() {
       const isScrolled = window.scrollY > 10;
       setShowSolidNav(isScrolled || isSolidNavPage);
     };
+    
+    // Call handler once to set initial state after mount
+    handleScroll();
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [pathname]);
+  }, [pathname, isMounted]);
 
+  const navIsSolid = showSolidNav || !isMounted;
 
   const NavLinkItems = ({ isMobile }: { isMobile?: boolean }) => (
     <>
@@ -46,7 +57,7 @@ export function Navbar() {
           className={cn(
             'hover:text-foreground hover:bg-accent/50 transition-colors',
             isMobile && 'w-full justify-start text-lg py-6',
-            showSolidNav ? 'text-foreground/80' : 'md:text-white text-foreground/80'
+            navIsSolid ? 'text-foreground/80' : 'md:text-white text-foreground/80'
           )}
           onClick={() => isMobile && setIsMenuOpen(false)}
         >
@@ -60,7 +71,7 @@ export function Navbar() {
     <header
       className={cn(
         'fixed top-0 left-0 right-0 z-50 transition-all duration-300',
-        showSolidNav ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
+        navIsSolid ? 'bg-background/80 shadow-md backdrop-blur-sm' : 'bg-transparent'
       )}
     >
       <div className="container mx-auto px-4">
@@ -69,7 +80,7 @@ export function Navbar() {
             <Heart className="w-6 h-6 text-primary transition-transform group-hover:scale-110" />
             <span  className={cn(
               "text-xl font-bold font-headline tracking-wider transition-colors duration-300",
-              showSolidNav ? "text-primary" : "text-white"
+              navIsSolid ? "text-primary" : "text-white"
             )}>
               D & B
             </span>
@@ -80,8 +91,8 @@ export function Navbar() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
               <SheetTrigger asChild >
-                  <Button variant="ghost" size="icon" className={cn(showSolidNav ? 'bg-transparent' : 'bg-white/80 hover:bg-white')} >
-                  <Menu className={cn("h-6 w-6", showSolidNav ? 'text-primary' : 'text-primary/80')} />
+                  <Button variant="ghost" size="icon" className={cn(navIsSolid ? 'bg-transparent' : 'bg-white/80 hover:bg-white')} >
+                  <Menu className={cn("h-6 w-6", navIsSolid ? 'text-primary' : 'text-primary/80')} />
                   <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
