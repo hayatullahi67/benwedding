@@ -40,7 +40,12 @@ const rsvpFormSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
   attending: z.enum(["yes", "no"], { required_error: "Please select an option." }),
   name: z.string().optional(),
-  phone: z.string().optional(),
+  phone: z.string().optional().refine(
+    (val) => !val || val.length === 11,
+    {
+      message: "pls yr phone number is nit up to 11 pls complete it",
+    }
+  ),
   guests: z.string().optional(),
   relation: z.string().optional(),
   directions: z.string().optional(),
@@ -131,28 +136,37 @@ export function RsvpForm() {
         if (data.attending === "yes" && data.name && data.email) {
 
             const emailBody = `
-              <div style="font-family: Arial, sans-serif; font-size: 16px; color: #333; line-height: 1.6;">
-                <p>Thank you for confirming your attendance! 💕</p>
-                <p>We’re so excited to celebrate this special day with you.</p>
-                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                <p><strong>📍 Reception Details:</strong></p>
-                <p style="margin: 5px 0;"><strong>Venue:</strong> Agaya Hotel, Kwandere Road. Lafia</p>
-                <p style="margin: 5px 0;"><strong>Date:</strong> 1st Nov, 2025</p>
-                <p style="margin: 5px 0;"><strong>Time:</strong> 4pm</p>
-                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                <p><strong>✨ Important Info:</strong></p>
-                <ul style="list-style-type: none; padding-left: 0;">
-                  <li style="margin-bottom: 10px;">- Please arrive 15–20 minutes early so you don’t miss the grand entrance.</li>
-                  <li style="margin-bottom: 10px;">- Colors Of the Day: Metallic Brown, Burgundy and Tan</li>
-                  <li style="margin-bottom: 10px;">- For questions, kindly reach us at: 08169536118</li>
-                </ul>
-                <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
-                <a href="https://benwedding.vercel.app/RSVP.pdf"  style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; text-decoration: none; border-radius: 5px;">Download Your Invitation</a>
-                <p>We can’t wait to share the joy, laughter, food, music, and dance with you! 🎶💃🕺</p>
-                <br>
-                <p>With love,</p>
-                <p><strong>DeeWealth💍</strong></p>
+            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f9f9f9; padding: 40px; margin: 0;">
+              <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+                <div style="background-color: #4A5568; color: #ffffff; padding: 30px; text-align: center;">
+                  <h1 style="margin: 0; font-size: 28px; font-weight: bold;">You're Invited!</h1>
+                </div>
+                <div style="padding: 30px 40px; color: #2D3748;">
+                  <p style="font-size: 18px; margin-bottom: 20px;">Dearest ${data.name},</p>
+                  <p style="font-size: 16px; line-height: 1.6;">Thank you for confirming your attendance! We are absolutely thrilled to have you celebrate with us. Your presence will make our special day even more memorable. 💕</p>
+                  <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 30px 0;">
+                  <h2 style="font-size: 22px; color: #2D3748; margin-bottom: 15px;">Event Details</h2>
+                  <p style="font-size: 16px; margin: 10px 0;"><strong>📍 Venue:</strong> Agaya Hotel, Kwandere Road, Lafia</p>
+                  <p style="font-size: 16px; margin: 10px 0;"><strong>🗓️ Date:</strong> November 1st, 2025</p>
+                  <p style="font-size: 16px; margin: 10px 0;"><strong>⏰ Time:</strong> 4:00 PM</p>
+                  <hr style="border: none; border-top: 1px solid #E2E8F0; margin: 30px 0;">
+                  <h2 style="font-size: 22px; color: #2D3748; margin-bottom: 15px;">A Few Notes</h2>
+                  <ul style="font-size: 16px; list-style-type: '✨'; padding-left: 20px; line-height: 1.8;">
+                    <li>Please arrive 15-20 minutes early to settle in before the grand entrance.</li>
+                    <li>Colors Of the Day: Metallic Brown, Burgundy, and Tan.</li>
+                    <li>For any questions, feel free to reach us at: 08169536118.</li>
+                  </ul>
+                  <div style="text-align: center; margin: 40px 0;">
+                    <a href="https://benwedding.vercel.app/RSVP.pdf" download="Wedding_Invitation.pdf" style="background-color: #2D3748; color: #ffffff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold; display: inline-block;">Download Your Invitation</a>
+                  </div>
+                  <p style="font-size: 16px; text-align: center; line-height: 1.6;">We can’t wait to share the joy, laughter, food, music, and dance with you! 🎶💃🕺</p>
+                </div>
+                <div style="background-color: #f7fafc; padding: 20px 40px; text-align: center; border-top: 1px solid #e2e8f0;">
+                  <p style="font-size: 16px; color: #718096; margin: 0;">With love and excitement,</p>
+                  <p style="font-size: 20px; font-weight: bold; color: #2D3748; margin: 5px 0 0 0;">DeeWealth 💍</p>
+                </div>
               </div>
+            </div>
             `;
 
             const templateParams = {
@@ -202,7 +216,7 @@ export function RsvpForm() {
                     <FormItem>
                       <FormLabel>Email Address *</FormLabel>
                       <FormControl>
-                        <Input placeholder="adewale@example.com" {...field} />
+                        <Input placeholder="Benjamin@example.com" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
